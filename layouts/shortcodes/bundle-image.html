@@ -5,9 +5,9 @@
     <a href="{{.RelPermalink}}">
       <img
         srcset="
-          {{ (.Resize "400x webp").RelPermalink }} 400w,
-          {{ (.Resize "700x wepb").RelPermalink }} 700w,
-          {{ (.Resize "1400x wepb").RelPermalink }} 2x"
+          {{ (.Resize "400x webp").RelPermalink }} 400w webp,
+          {{ (.Resize "700x wepb").RelPermalink }} 700w webp ,
+          {{ (.Resize "1400x wepb").RelPermalink }} 2x webp"
         src="{{ (.Resize "700x wepb").RelPermalink }}" alt="{{$altText}}"/>
     </a>
     <figcaption><p>{{ $caption }}</p></figcaption>
