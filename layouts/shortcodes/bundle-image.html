@@ -5,10 +5,10 @@
     <a href="{{.RelPermalink}}">
       <img
         srcset="
-          {{ (.Resize "2000x webp").RelPermalink type="image/webp" }} 2x,
-          {{ (.Resize "1000x webp").RelPermalink type="image/webp" }} 1x,
-          {{ (.Resize "2000x png").RelPermalink type="image/jpg" }} 2x"
-        src="{{ (.Resize "800x jpg").RelPermalink type="image/jpg" }}" alt="{{$altText}}"/>
+          {{ (.Resize "2000x webp q90").RelPermalink }} 2x,
+          {{ (.Resize "1000x webp q90").RelPermalink }} 1x,
+          {{ (.Resize "2000x png").RelPermalink }} 2x"
+        src="{{ (.Resize "800x jpg q60").RelPermalink type="image/jpg" }}" alt="{{$altText}}"/>
     </a>
     <figcaption><p>{{ $caption }}</p></figcaption>
   </figure>
