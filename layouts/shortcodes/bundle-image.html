@@ -1,52 +1,17 @@
-{{- $path := .Get "path" -}}
-{{- $alt := .Get "alt" -}}
-{{- $width := .Get "width" -}}
-{{- $height := .Get "height " -}}
-
-{{- $msg1 := "The %q shortcode requires a parameter named %q. See %s" -}}
-{{- $msg2 := "The resource %q passed to the %q shortcode is not an image. See %s" -}}
-{{- $msg3 := "The resource %q passed to the %q shortcode could not be found. See %s" -}}
-
-{{ if not $path }}
-  {{ errorf $msg1 .Name "path" .Position }}
+{{ $altText := .Get "alt"}}
+{{ $caption := .Get "caption"}}
+{{ with $.Page.Resources.GetMatch (.Get "name") }}
+  <figure>
+    <a href="{{.RelPermalink}}">
+      <img
+        srcset="
+          {{ (.Resize "2000x webp").RelPermalink type="image/webp" }} 2x,
+          {{ (.Resize "1000x webp").RelPermalink type="image/webp" }} 1x,
+          {{ (.Resize "2000x png").RelPermalink type="image/jpg" }} 2x"
+        src="{{ (.Resize "800x jpg").RelPermalink type="image/jpg" }}" alt="{{$altText}}"/>
+    </a>
+    <figcaption><p>{{ $caption }}</p></figcaption>
+  </figure>
+{{ else }}
+  could not find image
 {{ end }}
-
-{{- with $i := resources.Get $path -}}
-  {{- if eq $i.MediaType.MainType "image" -}}
-    {{- if not $width -}}
-      {{- $width = $i.Width -}}
-    {{- end -}}
-    {{- if not $height -}}
-      {{- $height = $i.Height -}}
-    {{- end -}}
-
-    {{- $j := "" -}}
-    {{- $w := "" -}}
-
-    {{- if eq $i.MediaType "image/webp" -}}
-      {{- $fitOptions := printf "%vx%v jpg" $width $height -}}
-      {{- $j = $i.Fit $fitOptions -}}
-      {{- $w = $i -}}
-    {{- else if eq $i.MediaType "image/jpeg" -}}
-      {{- $fitOptions := printf "%vx%v webp" $width $height -}}
-      {{- $w = $i.Fit $fitOptions -}}
-      {{- $j = $i -}}
-    {{- else -}}
-      {{- $fitOptions := printf "%vx%v jpg" $width $height -}}
-      {{- $j = $i.Fit $fitOptions -}}
-      {{- $fitOptions = printf "%vx%v webp" $width $height -}}
-      {{- $w = $i.Fit $fitOptions -}}
-    {{- end -}}
-
-    <picture>
-      <source srcset="{{ $w.RelPermalink }}" type="image/webp">
-      <source srcset="{{ $j.RelPermalink }}" type="image/jpeg">
-      <img src="{{ $j.RelPermalink }}" alt="{{ $alt }}" width="{{ $j.Width }}" height="{{ $j.Height }}">
-    </picture>
-  {{- else -}}
-    {{- errorf $msg2 $path $.Name $.Position -}}
-  {{- end -}}
-{{- else -}}
-  {{- errorf $msg3 $path .Name .Position -}}
-{{- end -}}
-{{- /* chomp */ -}}
