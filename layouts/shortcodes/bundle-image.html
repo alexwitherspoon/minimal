@@ -8,13 +8,7 @@
 	locally or in your online repo, especially if you have a really
 	large number of original images.)
 */}}
-{{- $imgBase := "images/" -}}
-{{/*
-	This will be from top-level `assets/images`, where we'll keep
-	all images for Hugo's processing (this makes them "global resources,"
-	as noted in the documentation).
-*/}}
-{{- $src := resources.Get (printf "%s%s" $imgBase (.Get "src")) -}}
+{{- $src := .Page.Resources.Get (printf "%s%s" $imgBase (.Get "src")) -}}
 {{- $alt := .Get "alt" -}}
 {{- $divClass := "" -}}{{/* Init'g */}}
 {{/*
