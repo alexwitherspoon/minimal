@@ -1,5 +1,0 @@
-{{ if (resources.GetMatch .Destination) }}
-  <img src="
-  {{ ((resources.GetMatch .Destination).Resize `1600 webp`).RelPermalink | safeURL }}
-  " alt="{{ .Text }}" />
-{{ end }}
