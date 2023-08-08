@@ -8,7 +8,7 @@
           {{ (.Resize "2000x webp q90").RelPermalink }} 2x,
           {{ (.Resize "1000x webp q90").RelPermalink }} 1x,
           {{ (.Resize "2000x png").RelPermalink }} 2x",
-          {{ (.Resize "600x jpg q75").RelPermalink }} 600w"
+          {{ (.Resize "1000x jpg q75").RelPermalink }} 1000w"
         src="{{ (.Resize "400x jpg q60").RelPermalink }}" alt="{{$altText}}" defer/>
     </a>
     <figcaption><p>{{ $caption }}</p></figcaption>
