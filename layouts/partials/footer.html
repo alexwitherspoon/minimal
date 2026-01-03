@@ -1,7 +1,8 @@
         <footer>
-
-            <p class="copyright text-muted">{{ .Site.Params.copyright | default "&copy; All rights reserved. Powered by [Hugo](https://gohugo.io) and [Minimal](https://github.com/calintat/minimal)" | markdownify }}</p>
-
+            {{ $copyright := .Site.Params.copyright | default "&copy; All rights reserved. Powered by [Hugo](https://gohugo.io) and [Minimal](https://github.com/calintat/minimal)" }}
+            {{ $currentYear := now.Year | string }}
+            {{ $copyright = replaceRE `\d{4}` $currentYear $copyright }}
+            <p class="copyright text-muted">{{ $copyright | markdownify }}</p>
         </footer>
        
     </body>
