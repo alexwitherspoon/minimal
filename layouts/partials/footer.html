@@ -1,8 +1,21 @@
         <footer>
-            {{ $copyright := .Site.Params.copyright | default "&copy; All rights reserved. Powered by [Hugo](https://gohugo.io) and [Minimal](https://github.com/calintat/minimal)" }}
             {{ $currentYear := now.Year | string }}
-            {{ $copyright = replaceRE `\d{4}` $currentYear $copyright }}
-            <p class="copyright text-muted">{{ $copyright | markdownify }}</p>
+            {{ $gitHash := "" }}
+            {{/* Try to get git hash from current page, home page, or site */}}
+            {{ if .GitInfo }}
+                {{ $gitHash = substr .GitInfo.Hash 0 7 }}
+            {{ else if .Site.Home.GitInfo }}
+                {{ $gitHash = substr .Site.Home.GitInfo.Hash 0 7 }}
+            {{ else if .Site.GitInfo }}
+                {{ $gitHash = substr .Site.GitInfo.Hash 0 7 }}
+            {{ end }}
+            <p class="copyright text-muted">
+                © {{ $currentYear }} All rights reserved.
+                {{ if $gitHash }}
+                    | <code>{{ $gitHash }}</code>
+                {{ end }}
+                | <a href="/terms-of-service">Terms of Service</a>
+            </p>
         </footer>
        
     </body>
