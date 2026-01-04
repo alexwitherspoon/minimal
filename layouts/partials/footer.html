@@ -1,13 +1,11 @@
         <footer>
             {{ $currentYear := now.Year | string }}
             {{ $gitHash := "" }}
-            {{/* Try to get git hash from current page, home page, or site */}}
-            {{ if .GitInfo }}
+            {{/* Try to get git hash from current page or home page */}}
+            {{ if and .GitInfo .GitInfo.Hash }}
                 {{ $gitHash = substr .GitInfo.Hash 0 7 }}
-            {{ else if .Site.Home.GitInfo }}
+            {{ else if and .Site.Home .Site.Home.GitInfo .Site.Home.GitInfo.Hash }}
                 {{ $gitHash = substr .Site.Home.GitInfo.Hash 0 7 }}
-            {{ else if .Site.GitInfo }}
-                {{ $gitHash = substr .Site.GitInfo.Hash 0 7 }}
             {{ end }}
             <p class="copyright text-muted">
                 © {{ $currentYear }} All rights reserved.
