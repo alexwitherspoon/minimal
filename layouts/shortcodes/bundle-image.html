@@ -1,13 +1,34 @@
 {{ $altText := .Get "alt"}}
 {{ $caption := .Get "caption"}}
-{{ with $.Page.Resources.GetMatch (.Get "name") }}
+{{ $imageName := .Get "name"}}
+{{ $sourceImage := $.Page.Resources.GetMatch $imageName }}
+
+{{ if $sourceImage }}
+  {{/* Try to get pre-processed images from assets/processed/ */}}
+  {{ $pageDir := strings.TrimPrefix "content/" $.Page.File.Dir }}
+  {{ $imageBaseName := replaceRE "\\.[^.]+$" "" $imageName }}
+  
+  {{ $preprocessed2000 := resources.Get (printf "processed/%s/%s_2000x.webp" $pageDir $imageBaseName) }}
+  {{ $preprocessed1000 := resources.Get (printf "processed/%s/%s_1000x.webp" $pageDir $imageBaseName) }}
+  {{ $preprocessed400 := resources.Get (printf "processed/%s/%s_400x.jpg" $pageDir $imageBaseName) }}
+  
   <figure>
-    <a href="{{.RelPermalink}}">
+    <a href="{{ $sourceImage.RelPermalink }}">
       <img
         srcset="
-          {{ (.Resize "2000x webp q90").RelPermalink }} 2x,
-          {{ (.Resize "1000x webp q90").RelPermalink }} 1x"
-        src="{{ (.Resize "400x jpg q60").RelPermalink }}" alt="{{$altText}}" defer/>
+          {{ if $preprocessed2000 }}
+            {{ $preprocessed2000.RelPermalink }} 2x,
+            {{ $preprocessed1000.RelPermalink }} 1x
+          {{ else }}
+            {{ ($sourceImage.Resize "2000x webp q90").RelPermalink }} 2x,
+            {{ ($sourceImage.Resize "1000x webp q90").RelPermalink }} 1x
+          {{ end }}"
+        src="{{ if $preprocessed400 }}
+          {{ $preprocessed400.RelPermalink }}
+        {{ else }}
+          {{ ($sourceImage.Resize "400x jpg q60").RelPermalink }}
+        {{ end }}" 
+        alt="{{ $altText }}" defer/>
     </a>
     <figcaption><p>{{ $caption }}</p></figcaption>
   </figure>
