@@ -1,11 +1,30 @@
         <footer>
             {{ $currentYear := now.Year | string }}
             {{ $gitHash := "" }}
-            {{/* Try to get git hash from current page or home page */}}
-            {{ if and .GitInfo .GitInfo.Hash }}
-                {{ $gitHash = substr .GitInfo.Hash 0 7 }}
-            {{ else if and .Site.Home .Site.Home.GitInfo .Site.Home.GitInfo.Hash }}
-                {{ $gitHash = substr .Site.Home.GitInfo.Hash 0 7 }}
+            {{/* Try to get git hash from multiple sources, in order of preference */}}
+            {{/* 1. From environment variable (set by CI/CD) - uses HUGO_ prefix for security whitelist */}}
+            {{ $envSha := getenv "HUGO_GIT_COMMIT_SHA_SHORT" }}
+            {{ if $envSha }}
+                {{ $gitHash = $envSha }}
+            {{ end }}
+            {{/* 2. From current page GitInfo (if env var not set) */}}
+            {{ if not $gitHash }}
+                {{ if and .GitInfo .GitInfo.Hash }}
+                    {{ $gitHash = substr .GitInfo.Hash 0 7 }}
+                {{ end }}
+            {{ end }}
+            {{/* 3. From home page GitInfo (if still not set) */}}
+            {{ if not $gitHash }}
+                {{ if and .Site.Home .Site.Home.GitInfo .Site.Home.GitInfo.Hash }}
+                    {{ $gitHash = substr .Site.Home.GitInfo.Hash 0 7 }}
+                {{ end }}
+            {{ end }}
+            {{/* 4. From full SHA environment variable (fallback) */}}
+            {{ if not $gitHash }}
+                {{ $fullSha := getenv "HUGO_GIT_COMMIT_SHA" }}
+                {{ if $fullSha }}
+                    {{ $gitHash = substr $fullSha 0 7 }}
+                {{ end }}
             {{ end }}
             <p class="copyright text-muted">
                 © {{ $currentYear }} All rights reserved.
