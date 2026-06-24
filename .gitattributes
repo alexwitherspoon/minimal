@@ -1,0 +1,2 @@
+# Normalize text files to LF (CI/Docker are Linux; avoids CRLF drift on macOS).
+* text=auto eol=lf
